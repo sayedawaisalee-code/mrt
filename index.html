@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>Awais_BaBa Marketplace</title>
+<style>
+body{font-family:Arial;margin:0;background:#f4f4f4}
+header{background:#ff6a00;color:#fff;padding:15px}
+nav button{margin:4px;padding:8px 12px}
+.page{display:none;padding:20px}
+.active{display:block}
+.card{background:#fff;padding:15px;margin:10px 0;border-radius:8px}
+input,textarea{width:100%;padding:8px;margin:5px 0}
+img{max-width:200px}
+</style>
+</head>
+<body>
+
+<header>
+<h1>Awais_BaBa Marketplace</h1>
+<nav>
+<button onclick="showPage('home')">Home</button>
+<button onclick="showPage('products')">Products</button>
+<button onclick="showPage('add')">Add Product</button>
+<button onclick="showPage('login')">Login</button>
+<button onclick="showPage('signup')">Signup</button>
+</nav>
+</header>
+
+<div id="home" class="page active">
+<h2>Welcome</h2>
+<p>Welcome in Awais_BaBa Marketplace Web</p>
+</div>
+
+<div id="products" class="page">
+<h2>Products</h2>
+<div id="productList"></div>
+</div>
+
+<div id="add" class="page">
+<h2>Add Product</h2>
+<input id="title" placeholder="Product Title">
+<input id="price" placeholder="Price">
+<textarea id="desc" placeholder="Description"></textarea>
+<input type="file" id="image">
+<button onclick="addProduct()">Save Product</button>
+</div>
+
+<div id="login" class="page">
+<h2>Login</h2>
+<input placeholder="Email">
+<input placeholder="Password" type="password">
+<button onclick="alert('Demo Login')">Login</button>
+</div>
+
+<div id="signup" class="page">
+<h2>Signup</h2>
+<input placeholder="Name">
+<input placeholder="Email">
+<input placeholder="Password" type="password">
+<button onclick="alert('Demo Signup')">Create Account</button>
+</div>
+
+<script>
+function showPage(id){
+ document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
+ document.getElementById(id).classList.add('active');
+}
+
+let products=JSON.parse(localStorage.getItem('products')||'[]');
+
+function save(){
+ localStorage.setItem('products',JSON.stringify(products));
+ render();
+}
+
+function render(){
+ let box=document.getElementById('productList');
+ box.innerHTML='';
+ products.forEach((p,i)=>{
+  box.innerHTML+=`
+  <div class="card">
+   <h3>${p.title}</h3>
+   <img src="${p.image||''}">
+   <p><b>Price:</b> ${p.price}</p>
+   <p>${p.desc}</p>
+   <button onclick="viewProduct(${i})">View Details</button>
+   <button onclick="deleteProduct(${i})">Delete</button>
+  </div>`;
+ });
+}
+
+function addProduct(){
+ const file=document.getElementById('image').files[0];
+ const reader=new FileReader();
+ reader.onload=function(){
+   products.push({
+     title:title.value,
+     price:price.value,
+     desc:desc.value,
+     image:reader.result
+   });
+   save();
+   alert('Product Added');
+ };
+ if(file){reader.readAsDataURL(file);}
+ else{
+   products.push({title:title.value,price:price.value,desc:desc.value,image:''});
+   save();
+ }
+}
+
+function viewProduct(i){
+ let p=products[i];
+ alert("Title: "+p.title+"\nPrice: "+p.price+"\nDescription: "+p.desc);
+}
+
+function deleteProduct(i){
+ products.splice(i,1);
+ save();
+}
+
+render();
+</script>
+</body>
+</html>
